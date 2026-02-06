@@ -3,16 +3,13 @@ let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
-
-
 public_users.post("/register", (req,res) => {
   const username=req.body.username
   const password=req.body.password
   if(!username || !password){
     return res.status(404).json({message:"Error. It's missing username or password"})
   }
-  const userExists=users.some((user)=>user.username===username)
-  if(userExists){
+  if(isValid(username)){
     return res.status(300).json({message:"Error.This username already exists."})
   }
   const specialCharacters = "!@#$%^&*()_+[]{}|;:',.<>?";
