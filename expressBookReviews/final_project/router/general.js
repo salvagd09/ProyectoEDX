@@ -23,7 +23,25 @@ public_users.post("/register", (req,res) => {
 
 // Get the book list available in the shop
 public_users.get('/',function (req, res) {
-  return res.status(200).send(JSON.stringify(books,null,4));
+  //Synchronous code
+  //return res.status(200).send(JSON.stringify(books,null,4));
+  //Use of Promise
+  let bookPromises=new Promise((resolve,reject)=>{
+    setTimeout(()=>{
+        if(books){
+            resolve(books)
+        }else{
+            reject({status:400,
+            message:"The requested resource doesn't exist"})
+        }
+    })
+  })
+  bookPromises.then((libros)=>{
+    return res.status(200).send(JSON.stringify(libros,null,4))
+  }).catch((error)=>{
+    const statusCode=error.status ||500
+    return res.status(statusCode).json({message:error.message || error})
+  })
 });
 
 // Get book details based on ISBN
